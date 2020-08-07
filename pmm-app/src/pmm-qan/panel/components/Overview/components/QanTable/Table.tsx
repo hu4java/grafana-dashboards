@@ -13,6 +13,7 @@ import {
 import { Spinner, useTheme } from '@grafana/ui';
 import { cx } from 'emotion';
 import useWindowSize from 'shared/components/helpers/WindowSize.hooks';
+import RSC from 'react-scrollbars-custom';
 import { getStyles } from './Table.styles';
 import { getMainColumnWidth, getAllColumnsWidth } from '../DefaultColumns/DefaultColumns';
 
@@ -54,10 +55,10 @@ export const Table: FC<TableProps> = ({
       const width = getMainColumnWidth(columns.length);
 
       document.querySelectorAll('.table-body .tr>div:nth-child(2)').forEach((element) => {
-        (element as HTMLElement).style.width = `${width}px`;
+        (element as HTMLElement).style['min-width'] = `${width}px`;
       });
       document.querySelectorAll('.table-body .tr').forEach((element) => {
-        (element as HTMLElement).style.width = `${getAllColumnsWidth(width, columns.length)}px`;
+        (element as HTMLElement).style['min-width'] = `${getAllColumnsWidth(width, columns.length)}px`;
       });
     }, 150);
   }, [columns]);
@@ -106,7 +107,7 @@ export const Table: FC<TableProps> = ({
         ...columns,
       ]);
     },
-    useBlockLayout
+    useBlockLayout,
   );
 
   useEffect(() => {
@@ -159,7 +160,11 @@ export const Table: FC<TableProps> = ({
                       <div className={styles.headerContent}>
                         <div className="header-wrapper">{column.render('Header')}</div>
                         {column.sortable ? (
-                          <a className={styles.sortBy} {...column.getSortByToggleProps()} data-qa="sort-by-control">
+                          <a
+                            className={styles.sortBy}
+                            {...column.getSortByToggleProps()}
+                            data-qa="sort-by-control"
+                          >
                             <span className={`sort-by ${sorted}`} />
                           </a>
                         ) : null}
@@ -197,7 +202,7 @@ export const Table: FC<TableProps> = ({
         </>
       );
     },
-    [prepareRow, rows, rowClassName]
+    [prepareRow, rows, rowClassName],
   );
 
   return (
@@ -216,9 +221,16 @@ export const Table: FC<TableProps> = ({
           ) : null}
           {rows.length && !loading ? (
             <div {...getTableProps()} className="table">
-              <div {...getTableBodyProps()} className={cx('table-body', styles.tableBody(scroll.y))}>
+              <RSC
+                {...getTableBodyProps()}
+                className={cx('table-body')}
+                style={{ width: scroll.x - 21, height: scroll.y - 70 }}
+                contentProps={{
+                  className: styles.scrollableContent
+                }}
+              >
                 {rows.map(RenderRow)}
-              </div>
+              </RSC>
             </div>
           ) : null}
         </div>
