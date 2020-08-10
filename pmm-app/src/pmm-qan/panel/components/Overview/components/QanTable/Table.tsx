@@ -13,7 +13,7 @@ import {
 import { Spinner, useTheme } from '@grafana/ui';
 import { cx } from 'emotion';
 import useWindowSize from 'shared/components/helpers/WindowSize.hooks';
-import RSC from 'react-scrollbars-custom';
+import ReactScrollbar from 'react-scrollbars-custom';
 import { getStyles } from './Table.styles';
 import { getMainColumnWidth, getAllColumnsWidth } from '../DefaultColumns/DefaultColumns';
 
@@ -221,7 +221,7 @@ export const Table: FC<TableProps> = ({
           ) : null}
           {rows.length && !loading ? (
             <div {...getTableProps()} className="table">
-              <RSC
+              <ReactScrollbar
                 {...getTableBodyProps()}
                 className={cx('table-body')}
                 style={{ height: scroll.y - 70 }}
@@ -230,7 +230,7 @@ export const Table: FC<TableProps> = ({
                 }}
               >
                 {rows.map(RenderRow)}
-              </RSC>
+              </ReactScrollbar>
             </div>
           ) : null}
         </div>
